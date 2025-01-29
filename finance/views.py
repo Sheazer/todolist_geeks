@@ -3,6 +3,8 @@ from django.views import View
 from django.views.generic import ListView, CreateView
 from django.db.models import Sum
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import matplotlib.pyplot as plt
@@ -22,10 +24,13 @@ class TransactionList(APIView):
         return Response(serializer.data)
 
 
-class TransactionListView(ListView):
+class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
     template_name = 'finance/transaction_list.html'
     context_object_name = 'transactions'
+
+    def get_queryset(self):
+        return Transaction.objects.filter(user=self.request.user)
 
 
 class TransactionCreateView(CreateView):
@@ -33,6 +38,10 @@ class TransactionCreateView(CreateView):
     form_class = TransactionForm
     template_name = 'finance/transaction_form.html'
     success_url = reverse_lazy('transaction_list_view')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class FinanceDashboardView(View):
@@ -44,7 +53,8 @@ class FinanceDashboardView(View):
         balance = total_income - total_expense
 
         categories = transactions.values_list('category', flat=True).distinct()
-        category_totals = [transactions.filter(category=cat).aggregate(Sum('amount'))['amount__sum'] for cat in categories]
+        category_totals = [transactions.filter(category=cat).aggregate(Sum('amount'))['amount__sum'] for cat in
+                           categories]
 
         fig, ax = plt.subplots()
         ax.pie(category_totals, labels=categories, autopct='%1.1f%%', startangle=90)
@@ -64,5 +74,3 @@ class FinanceDashboardView(View):
         }
 
         return render(request, 'finance/dashboard.html', context)
-
-
