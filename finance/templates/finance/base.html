@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Финансовый трекер</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'transaction_list' %}">Главная</a>
+        <a href="{% url 'transaction_add' %}">Добавить транзакцию</a>
+    </nav>
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>
