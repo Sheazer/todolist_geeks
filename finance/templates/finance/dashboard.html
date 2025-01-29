@@ -1,0 +1,13 @@
+{% extends 'finance/base.html' %}
+
+{% block content %}
+<h2>Финансовая статистика</h2>
+<p><strong>Общий баланс:</strong> {{ balance }}</p>
+<p><strong>Доходы:</strong> {{ total_income }}</p>
+<p><strong>Расходы:</strong> {{ total_expense }}</p>
+
+<h3>Распределение по категориям</h3>
+<img src="{{ chart }}" alt="График категорий">
+
+<a href="{% url 'transaction_list' %}">Вернуться к транзакциям</a>
+{% endblock %}

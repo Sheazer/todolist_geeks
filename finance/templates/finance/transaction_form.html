@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'finance/base.html' %}
 
 {% block content %}
 <h2>Добавить транзакцию</h2>
@@ -7,5 +7,5 @@
     {{ form.as_p }}
     <button type="submit">Сохранить</button>
 </form>
-<a href="{% url 'transaction_list' %}">Назад</a>
+<a href="{% url 'transaction_list_view' %}">Назад</a>
 {% endblock %}
